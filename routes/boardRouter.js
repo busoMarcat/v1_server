@@ -6,9 +6,9 @@ router.use(express.json())
 
 router.post('/', async (req, res) => {
     let {title, nickName, detail, price} = req.body;
-    const sqlQuery = `insert into board(title, nickName, detail, price, uploadDate, interests, views) values('${title}', '${nickName}', '${detail}', '${price}', now(), 0, 0)`;
+    const sqlQuery = 'insert into board(title, nickName, detail, price, uploadDate, interests, views) values(?, ?, ?, ?, now(), 0, 0)';
     try{
-        sql = await db.query(sqlQuery);
+        sql = await db.query(sqlQuery, [title, nickName, detail, price]);
         res.json({success:true});
     } catch(err){
         console.log(err);
@@ -30,9 +30,9 @@ router.get('/', async (req, res) => {
 
 router.get('/:boardId', async (req, res) => {
     const boardId = req.params.boardId;
-    const sqlQuery = `select * from board where boardId = ${boardId};`;
+    const sqlQuery = 'select * from board where boardId = ?';
     try{
-        const sql = await db.query(sqlQuery);
+        const sql = await db.query(sqlQuery, [boardId]);
         let [result] = sql;
         res.send(result);
     } catch(err){
