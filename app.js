@@ -8,9 +8,6 @@ app.use('/board', create);
 const read = require('./routes/readRouter');
 app.use('/board', read);
 
-const detail = require('./routes/detailRouter');
-app.use('/board', detail);
-
 app.listen(port, () => {
   console.log(`listening  at http://localhost:${port}`);
 });
