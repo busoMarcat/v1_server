@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { sequelize, DataTypes } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const models = require("../models");
 router.use(express.json());
 
@@ -12,12 +12,12 @@ router.post("/", async (req, res) => {
       nickName: `${nickName}`,
       detail: `${detail}`,
       price: `${price}`,
-      uploadDate: "now()",
+      uploadDate: Sequelize.literal("now()"),
       interests: "0",
       views: "0",
     };
     console.log(newBoard.nickName);
-    const newboard = models.board.create(newBoard);
+    const newboard = await models.board.create(newBoard);
 
     console.log(newboard);
     res.json({ success: true });
@@ -28,13 +28,9 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const sqlQuery =
-    "select title, nickName, price, uploadDate, interests from board";
   try {
-    sql = await db.query(sqlQuery);
-    let [result] = sql;
-    res.send(result);
-    res.json(result);
+    const results = await models.board.findAll({attributes: [ 'boardId', 'title', 'nickName', 'price', 'uploadDate', 'interests', 'views']});
+    res.send(results);
   } catch (err) {
     console.log(err);
   }
@@ -42,10 +38,8 @@ router.get("/", async (req, res) => {
 
 router.get("/:boardId", async (req, res) => {
   const boardId = req.params.boardId;
-  const sqlQuery = "select * from board where boardId = ?";
   try {
-    const sql = await db.query(sqlQuery, [boardId]);
-    let [result] = sql;
+    const result = await models.board.findOne({where : {boardId : boardId}})
     res.send(result);
   } catch (err) {
     console.log(err);
