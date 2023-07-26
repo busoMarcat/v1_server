@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { sequelize, DataTypes } = require("sequelize");
+const models = require("../models");
 
-const Board = require("../models/board");
 router.use(express.json());
 
 // 업데이트
@@ -11,7 +11,7 @@ router.put("/:boardId", async (req, res) => {
   const { title, nickName, detail, price } = req.body;
 
   try {
-    const board = await Board.findByPk(boardId);
+    const board = await models.board.findOne({ where: { boardId: boardId } });
     if (!board) {
       return res.status(404).json({ error: "게시판을 찾을 수 없습니다." });
     }
@@ -36,7 +36,7 @@ router.delete("/:boardId", async (req, res) => {
   const boardId = req.params.boardId;
 
   try {
-    const board = await Board.findByPk(boardId);
+    const board = await models.board.findOne({ where: { boardId: boardId } });
     if (!board) {
       return res.status(404).json({ error: "게시판을 찾을 수 없습니다." });
     }
