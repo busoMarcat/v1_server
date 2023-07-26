@@ -1,54 +1,54 @@
 const express = require("express");
 const router = express.Router();
 const { sequelize, DataTypes } = require("sequelize");
-const models = require("../models");
+
+const Board = require("../models/board");
 router.use(express.json());
 
-router.post("/", async (req, res) => {
-  let { title, nickName, detail, price } = req.body;
-  try {
-    const newBoard = {
-      title: `${title}`,
-      nickName: `${nickName}`,
-      detail: `${detail}`,
-      price: `${price}`,
-      uploadDate: "now()",
-      interests: "0",
-      views: "0",
-    };
-    console.log(newBoard.nickName);
-    const newboard = models.board.create(newBoard);
+// 업데이트
+router.put("/:boardId", async (req, res) => {
+  const boardId = req.params.boardId;
+  const { title, nickName, detail, price } = req.body;
 
-    console.log(newboard);
+  try {
+    const board = await Board.findByPk(boardId);
+    if (!board) {
+      return res.status(404).json({ error: "게시판을 찾을 수 없습니다." });
+    }
+    board.title = title;
+    board.nickName = nickName;
+    board.detail = detail;
+    board.price = price;
+    
+    await board.save();
+
     res.json({ success: true });
   } catch (err) {
     console.log(err);
-    res.json({ success: false });
+    res
+      .status(500)
+      .json({ error: "데이터를 업데이트하는 동안 오류가 발생했습니다." });
   }
 });
 
-router.get("/", async (req, res) => {
-  const sqlQuery =
-    "select title, nickName, price, uploadDate, interests from board";
-  try {
-    sql = await db.query(sqlQuery);
-    let [result] = sql;
-    res.send(result);
-    res.json(result);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-router.get("/:boardId", async (req, res) => {
+// 삭제
+router.delete("/:boardId", async (req, res) => {
   const boardId = req.params.boardId;
-  const sqlQuery = "select * from board where boardId = ?";
+
   try {
-    const sql = await db.query(sqlQuery, [boardId]);
-    let [result] = sql;
-    res.send(result);
+    const board = await Board.findByPk(boardId);
+    if (!board) {
+      return res.status(404).json({ error: "게시판을 찾을 수 없습니다." });
+    }
+    
+    await board.destroy();
+
+    res.json({ success: true });
   } catch (err) {
     console.log(err);
+    res
+      .status(500)
+      .json({ error: "데이터를 삭제하는 동안 오류가 발생했습니다." });
   }
 });
 
