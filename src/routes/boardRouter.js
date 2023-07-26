@@ -1,25 +1,33 @@
 const express = require("express");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+const uploadPath = path.resolve("../../public/images/");
+
 const router = express.Router();
-const { sequelize, DataTypes } = require("sequelize");
+const { Sequelize, sequelize, DataTypes } = require("sequelize");
 const models = require("../models");
+const upload = multer({ dest: "./public/images" });
+
 router.use(express.json());
 
-router.post("/", async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
+  console.log("Upload Path:", uploadPath);
   let { title, nickName, detail, price } = req.body;
+  const imageUrl = req.file.filename;
   try {
     const newBoard = {
-      title: `${title}`,
-      nickName: `${nickName}`,
-      detail: `${detail}`,
-      price: `${price}`,
-      uploadDate: "now()",
+      title,
+      nickName,
+      detail,
+      price,
+      image: `${imageUrl}`,
+      uploadDate: Sequelize.literal(`now()`),
       interests: "0",
       views: "0",
     };
-    console.log(newBoard.nickName);
-    const newboard = models.board.create(newBoard);
 
-    console.log(newboard);
+    const newboard = models.board.create(newBoard);
     res.json({ success: true });
   } catch (err) {
     console.log(err);
@@ -28,13 +36,20 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const sqlQuery =
-    "select title, nickName, price, uploadDate, interests from board";
   try {
-    sql = await db.query(sqlQuery);
-    let [result] = sql;
-    res.send(result);
-    res.json(result);
+    const results = await models.board.findAll({
+      attributes: [
+        "boardId",
+        "title",
+        "nickName",
+        "price",
+        "image",
+        "uploadDate",
+        "interests",
+        "views",
+      ],
+    });
+    res.send(results);
   } catch (err) {
     console.log(err);
   }
@@ -42,10 +57,8 @@ router.get("/", async (req, res) => {
 
 router.get("/:boardId", async (req, res) => {
   const boardId = req.params.boardId;
-  const sqlQuery = "select * from board where boardId = ?";
   try {
-    const sql = await db.query(sqlQuery, [boardId]);
-    let [result] = sql;
+    const result = await models.board.findOne({ where: { boardId: boardId } });
     res.send(result);
   } catch (err) {
     console.log(err);
