@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { sequelize, DataTypes } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const models = require("../models");
 
 router.use(express.json());
+
 
 // 업데이트
 router.put("/:boardId", async (req, res) => {
@@ -23,6 +24,35 @@ router.put("/:boardId", async (req, res) => {
     await board.save();
 
     res.json({ success: true });
+
+router.post("/", async (req, res) => {
+  let { title, nickName, detail, price } = req.body;
+  try {
+    const newBoard = {
+      title: `${title}`,
+      nickName: `${nickName}`,
+      detail: `${detail}`,
+      price: `${price}`,
+      uploadDate: Sequelize.literal("now()"),
+      interests: "0",
+      views: "0",
+    };
+    console.log(newBoard.nickName);
+    const newboard = await models.board.create(newBoard);
+
+    console.log(newboard);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const results = await models.board.findAll({attributes: [ 'boardId', 'title', 'nickName', 'price', 'uploadDate', 'interests', 'views']});
+    res.send(results);
+
   } catch (err) {
     console.log(err);
     res
@@ -35,6 +65,7 @@ router.put("/:boardId", async (req, res) => {
 router.delete("/:boardId", async (req, res) => {
   const boardId = req.params.boardId;
 
+
   try {
     const board = await models.board.findOne({ where: { boardId: boardId } });
     if (!board) {
@@ -44,6 +75,11 @@ router.delete("/:boardId", async (req, res) => {
     await board.destroy();
 
     res.json({ success: true });
+
+  try {
+    const result = await models.board.findOne({where : {boardId : boardId}})
+    res.send(result);
+
   } catch (err) {
     console.log(err);
     res
