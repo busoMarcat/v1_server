@@ -39,6 +39,7 @@ router.get("/", async (req, res) => {
 router.get("/:boardId", async (req, res) => {
   const boardId = req.params.boardId;
   try {
+    const result = await models.board.findOne({where : {boardId : boardId}})
     res.send(result);
   } catch (err) {
     console.log(err);
