@@ -25,6 +25,22 @@ router.post("/search", async (req, res) => {
   }
 });
 
+// 검색어 조회
+router.get("/search", async (req, res) => {
+  try {
+    const searchLogs = await models.search_log.findAll({
+      attributes: ["search_word", [Sequelize.fn("COUNT", Sequelize.col("search_word")), "count"]],
+      group: ["search_word"],
+      order: [[Sequelize.literal("count"), "DESC"]],
+      limit: 5,
+    });
+    res.json(searchLogs);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "검색어를 조회하는 동안 오류가 발생했습니다." });
+  }
+});
+
 
 // 업데이트
 router.put("/:boardId", async (req, res) => {
