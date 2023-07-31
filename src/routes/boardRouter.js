@@ -8,6 +8,24 @@ const upload = multer({ dest: "./public/images" });
 
 router.use(express.json());
 
+
+// 검색어 저장
+router.post("/search", async (req, res) => {
+  const { search } = req.body; 
+
+  try {
+    const newSearch = {
+      search_word: search, 
+    };
+    const newsearch = await models.search_log.create(newSearch);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "검색어를 저장하는 동안 오류가 발생했습니다." });
+  }
+});
+
+
 // 업데이트
 router.put("/:boardId", async (req, res) => {
   const boardId = req.params.boardId;
@@ -58,23 +76,12 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const results = await models.board.findAll({
-      attributes: [
-        "boardId",
-        "title",
-        "nickName",
-        "price",
-        "image",
-        "uploadDate",
-        "interests",
-        "views",
-      ],
+      attributes: ["boardId", "title", "nickName", "price", "image", "uploadDate", "interests", "views"],
     });
     res.send(results);
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({ error: "데이터를 업데이트하는 동안 오류가 발생했습니다." });
+    res.status(500).json({ error: "데이터를 업데이트하는 동안 오류가 발생했습니다." });
   }
 });
 router.get("/:boardId", async (req, res) => {
@@ -101,9 +108,7 @@ router.delete("/:boardId", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({ error: "데이터를 삭제하는 동안 오류가 발생했습니다." });
+    res.status(500).json({ error: "데이터를 삭제하는 동안 오류가 발생했습니다." });
   }
 });
 
