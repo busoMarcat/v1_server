@@ -25,6 +25,23 @@ router.post("/search", async (req, res) => {
   }
 });
 
+//좋아요 상위 3개 조회
+router.get('/find', async (req, res) => {
+  try {
+    const rows = await models.board.findAll({
+      attributes: ['title'],
+      order: [['interests', 'DESC']],
+      limit: 3,
+    });
+
+    res.json(rows);
+  } catch (err) {
+    console.error('Error executing Sequelize query:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 // 검색어 조회
 router.get("/search", async (req, res) => {
   try {
