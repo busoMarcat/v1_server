@@ -16,6 +16,7 @@ const sequelize = new Sequelize(
 db.board = require("./board")(sequelize, Sequelize);
 db.chattings = require("./chattings")(sequelize, Sequelize);
 db.user = require("./user")(sequelize, Sequelize);
+db.search_log = require("./search_log")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
