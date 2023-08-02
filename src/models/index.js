@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const env = process.env.NODE_ENV || "development";
-const config = require("../config/config.json")[env];
+const config = require("../config/config")[env];
 const db = {};
 
 //아래 설정을 통해 sequelize 가 노드랑 sql을 연결해준다.
