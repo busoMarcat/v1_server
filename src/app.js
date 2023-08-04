@@ -3,11 +3,13 @@ const app = express();
 const db = require("./models");
 const port = 3000;
 const boardRouter = require("./routes/boardRouter");
+const LoginRouter = require("./routes/loginRouter");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/board", boardRouter);
+app.use("/login", LoginRouter);
 
 db.sequelize
   .sync()
