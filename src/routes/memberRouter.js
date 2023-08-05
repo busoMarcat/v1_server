@@ -11,12 +11,8 @@ const saltRounds = parseInt(ROUNDS);
 router.post("/", async (req, res) => {
   const { id, pw, nickname } = req.body;
 
-  if (!id) {
-    res.status(400).json({ error: "아이디가 없습니다" });
-  } else if (!pw) {
-    res.status(400).json({ eroor: "비밀번호가 없습니다" });
-  } else if (!nickname) {
-    res.status(400).json({ eroor: "닉네임이 없습니다" });
+  if (!id || !pw || !nickname) {
+    res.status(400).json({ error: "아이디 혹은 비밀번호 혹은 닉네임이 입력되지 않았습니다" });
   }
 
   try {
@@ -26,10 +22,10 @@ router.post("/", async (req, res) => {
       password: hash,
       nickName: nickname,
     });
-    res.status(200).json({ success: true });
+    res.status(200).send({ message: "회원 가입이 완료되었습니다"});
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false });
+    res.status(500).json({ error: "회원 가입에 실패하였습니다"});
   }
 });
 
