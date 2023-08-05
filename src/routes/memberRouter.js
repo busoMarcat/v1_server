@@ -1,13 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const router = express.Router();
-const { Sequelize, sequelize, DataTypes } = require("sequelize");
 const models = require("../models");
 const bcrypt = require("bcrypt");
 
 const { ROUNDS: saltRounds } = process.env;
 
-router.use(express.json());
 
 // 회원가입 기능
 router.post("/", async (req, res) => {
