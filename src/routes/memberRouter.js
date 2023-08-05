@@ -4,8 +4,8 @@ const router = express.Router();
 const models = require("../models");
 const bcrypt = require("bcrypt");
 
-const { ROUNDS: saltRounds } = process.env;
-
+const { ROUNDS } = process.env;
+const saltRounds = parseInt(ROUNDS);
 
 // 회원가입 기능
 router.post("/", async (req, res) => {
