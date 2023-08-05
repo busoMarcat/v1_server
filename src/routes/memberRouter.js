@@ -1,9 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const { Sequelize, sequelize, DataTypes } = require("sequelize");
 const models = require("../models");
 const bcrypt = require("bcrypt");
-require("dotenv").config();
 
 const { ROUNDS: saltRounds } = process.env;
 
