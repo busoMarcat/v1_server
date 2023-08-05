@@ -5,9 +5,7 @@ const models = require("../models");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 
-const env = process.env;
-
-const saltRounds = parseInt(env.ROUNDS);
+const { ROUNDS: saltRounds } = process.env;
 
 router.use(express.json());
 
