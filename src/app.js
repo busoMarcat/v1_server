@@ -7,6 +7,7 @@ const indexRouter = require("./routes/indexRouter");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.use("/api", indexRouter);
 
 db.sequelize
