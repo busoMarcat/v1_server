@@ -1,3 +1,4 @@
+require("dotenv").config();
 const multer = require("multer");
 const path = require("path");
 const upload = multer({
@@ -5,7 +6,7 @@ const upload = multer({
     // 저장한공간 정보 : 하드디스크에 저장
     destination(req, file, done) {
       // 저장 위치
-      done(null, "/Users/mac/Documents/sideProject/v1_server/public/images/"); // uploads라는 폴더 안에 저장
+      done(null, process.env.FILELINK); // uploads라는 폴더 안에 저장
     },
     filename(req, file, done) {
       // 파일명을 어떤 이름으로 올릴지
